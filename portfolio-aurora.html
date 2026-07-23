@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Aurora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#05060f;
+    --bg-1:#0a0d1f;
+    --bg-2:#0e1330;
+    --glass:rgba(255,255,255,0.06);
+    --glass-strong:rgba(255,255,255,0.11);
+    --glass-border:rgba(255,255,255,0.14);
+    --ice:#9cc9ff;
+    --mint:#7ff0c7;
+    --coral:#ff8563;
+    --text-0:#f3f5fb;
+    --text-1:#a8b0c8;
+    --text-2:#6a7290;
+    --font-display:'Sora', sans-serif;
+    --font-body:'Manrope', sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+  }
+  *{margin:0; padding:0; box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  body{
+    background:var(--bg-0); color:var(--text-0); font-family:var(--font-body);
+    overflow-x:hidden;
+  }
+  ::selection{background:rgba(255,133,99,0.3); color:#fff;}
+
+  /* ---------- aurora background ---------- */
+  .aurora{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:linear-gradient(160deg, var(--bg-0), var(--bg-1) 45%, var(--bg-2));
+  }
+  .blob{position:fixed; border-radius:50%; filter:blur(90px); z-index:0; pointer-events:none; opacity:0.55; will-change:transform;}
+  .blob-1{width:560px; height:560px; background:radial-gradient(circle, var(--ice), transparent 70%); top:-120px; left:-100px; animation:drift1 22s ease-in-out infinite;}
+  .blob-2{width:480px; height:480px; background:radial-gradient(circle, var(--mint), transparent 70%); top:30%; right:-140px; animation:drift2 26s ease-in-out infinite;}
+  .blob-3{width:420px; height:420px; background:radial-gradient(circle, var(--coral), transparent 70%); bottom:-100px; left:30%; animation:drift3 20s ease-in-out infinite;}
+  @keyframes drift1{0%,100%{transform:translate(0,0);} 50%{transform:translate(60px,80px);}}
+  @keyframes drift2{0%,100%{transform:translate(0,0);} 50%{transform:translate(-70px,50px);}}
+  @keyframes drift3{0%,100%{transform:translate(0,0);} 50%{transform:translate(40px,-60px);}}
+
+  .grain{
+    position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  section, header, footer{position:relative; z-index:2;}
+
+  .glass{
+    background:var(--glass);
+    backdrop-filter:blur(22px) saturate(150%);
+    -webkit-backdrop-filter:blur(22px) saturate(150%);
+    border:1px solid var(--glass-border);
+    border-radius:22px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  .eyebrow{
+    font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--mint); display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:''; width:20px; height:1px; background:var(--mint);}
+
+  h1,h2,h3{font-family:var(--font-display); letter-spacing:-0.02em;}
+  .accent{background:linear-gradient(100deg, var(--ice), var(--coral)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+
+  /* ---------- nav ---------- */
+  header{position:fixed; top:0; left:0; right:0; z-index:1000; padding:18px 5vw;}
+  .nav-inner{display:flex; align-items:center; justify-content:space-between; padding:12px 22px;}
+  .logo{font-family:var(--font-display); font-weight:700; font-size:1.05rem;}
+  .logo span{color:var(--coral);}
+  nav ul{list-style:none; display:flex; gap:30px;}
+  nav a{color:var(--text-1); text-decoration:none; font-size:0.85rem; font-weight:600; transition:color .25s;}
+  nav a:hover{color:var(--text-0);}
+  .nav-toggle{display:none; flex-direction:column; gap:5px; background:none; border:none; padding:6px;}
+  .nav-toggle span{width:22px; height:2px; background:var(--text-0); border-radius:2px;}
+
+  /* ---------- hero ---------- */
+  .hero{min-height:100vh; display:flex; align-items:center; padding:130px 5vw 60px;}
+  .hero-inner{display:grid; grid-template-columns:1.05fr 0.95fr; gap:4vw; align-items:center; max-width:1320px; margin:0 auto; width:100%;}
+  .kicker{font-family:var(--font-mono); font-size:0.78rem; color:var(--text-1); letter-spacing:0.04em; margin-bottom:10px;}
+  .hero-title{font-size:clamp(2.4rem,5.4vw,4.4rem); line-height:1.02; font-weight:800; margin-bottom:22px;}
+  .hero-title .line{display:block; overflow:hidden;}
+  .hero-title .line span{display:inline-block; animation:riseIn .8s cubic-bezier(.2,.8,.2,1) both;}
+  .hero-title .line:nth-child(1) span{animation-delay:.05s;}
+  .hero-title .line:nth-child(2) span{animation-delay:.18s;}
+  .hero-title .line:nth-child(3) span{animation-delay:.3s;}
+  @keyframes riseIn{from{transform:translateY(110%);} to{transform:translateY(0);}}
+  .hero p.lede{color:var(--text-1); font-size:1.02rem; max-width:480px; line-height:1.75; margin-bottom:30px;}
+
+  .pill-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:34px;}
+  .pill{font-family:var(--font-mono); font-size:0.72rem; padding:7px 14px; border-radius:100px; color:var(--text-1);}
+
+  .btn{font-family:var(--font-body); font-weight:700; font-size:0.88rem; padding:14px 28px; border-radius:100px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; position:relative;}
+  .btn-primary{background:linear-gradient(100deg, var(--coral), #ffb199); color:#1a0a06; box-shadow:0 10px 26px rgba(255,133,99,0.28);}
+  .btn-ghost{color:var(--text-0);}
+  .hero-cta{display:flex; gap:16px; flex-wrap:wrap;}
+  .magnetic{transition:transform .15s ease-out;}
+
+  /* ---------- 3D orb ---------- */
+  .orb-scene{perspective:1300px; display:flex; align-items:center; justify-content:center; height:440px;}
+  .orb{width:250px; height:250px; position:relative; transform-style:preserve-3d; animation:orbit 24s linear infinite;}
+  .orb-scene:hover .orb{animation-play-state:paused;}
+  @keyframes orbit{from{transform:rotateY(0) rotateX(8deg);} to{transform:rotateY(360deg) rotateX(8deg);}}
+  .ring{
+    position:absolute; inset:0; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.16);
+    background:radial-gradient(circle at 30% 30%, rgba(156,201,255,0.14), rgba(255,255,255,0.02));
+    box-shadow:inset 0 0 40px rgba(255,255,255,0.05);
+  }
+  .ring.r1{transform:rotateX(0deg);}
+  .ring.r2{transform:rotateX(60deg);}
+  .ring.r3{transform:rotateX(120deg);}
+  .ring.r4{transform:rotateY(90deg);}
+  .core{
+    position:absolute; width:86px; height:86px; left:50%; top:50%; margin:-43px;
+    border-radius:50%; background:radial-gradient(circle at 35% 30%, #fff, var(--ice) 40%, var(--coral) 100%);
+    box-shadow:0 0 60px rgba(156,201,255,0.55), 0 0 100px rgba(255,133,99,0.25);
+    transform:translateZ(0);
+  }
+  .node{position:absolute; width:9px; height:9px; border-radius:50%; background:var(--mint); box-shadow:0 0 10px var(--mint);}
+  .node.n1{top:6%; left:48%;}
+  .node.n2{top:50%; left:-2%;}
+  .node.n3{top:50%; right:-2%; background:var(--coral); box-shadow:0 0 10px var(--coral);}
+  .node.n4{bottom:6%; left:48%; background:var(--ice); box-shadow:0 0 10px var(--ice);}
+
+  .scroll-cue{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; font-family:var(--font-mono); font-size:0.62rem; color:var(--text-2); letter-spacing:0.14em;}
+  .scroll-cue .line{width:1px; height:32px; background:linear-gradient(180deg, var(--mint), transparent); animation:pulse 1.8s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:.2;} 50%{opacity:1;}}
+
+  /* ---------- section shell ---------- */
+  .section-shell{max-width:1280px; margin:0 auto; padding:140px 5vw 20px;}
+  .section-shell.bleed{max-width:none; padding-left:0; padding-right:0;}
+  .section-head{margin-bottom:52px; max-width:600px; padding:0 5vw;}
+  .section-shell.bleed .section-head{padding:0 5vw;}
+  .section-head h2{font-size:clamp(1.7rem,3.2vw,2.5rem); margin-top:12px;}
+  .section-head p{color:var(--text-1); margin-top:14px; line-height:1.7;}
+
+  .reveal{opacity:0; transform:translateY(30px); transition:opacity .8s ease, transform .8s ease;}
+  .reveal.in-view{opacity:1; transform:translateY(0);}
+
+  /* ---------- about ---------- */
+  .about-grid{display:grid; grid-template-columns:0.7fr 1.3fr; gap:28px;}
+  .avatar-card{padding:34px; display:flex; flex-direction:column; justify-content:space-between; min-height:280px;}
+  .monogram{width:64px; height:64px; border-radius:18px; background:linear-gradient(135deg, var(--ice), var(--coral)); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:800; font-size:1.4rem; color:#0a0a14;}
+  .avatar-card .meta{font-family:var(--font-mono); font-size:0.76rem; color:var(--text-1); line-height:1.9;}
+  .about-copy{padding:34px;}
+  .about-copy p{color:var(--text-1); line-height:1.85; font-size:1rem; margin-bottom:16px;}
+  .about-copy .hl{color:var(--text-0); font-weight:700;}
+
+  /* ---------- journey: horizontal scroll ---------- */
+  .h-scroll{display:flex; gap:20px; overflow-x:auto; padding:10px 5vw 30px; scroll-snap-type:x proximity; scrollbar-width:none;}
+  .h-scroll::-webkit-scrollbar{display:none;}
+  .j-card{flex:0 0 280px; scroll-snap-align:start; padding:26px; min-height:210px; display:flex; flex-direction:column; justify-content:space-between;}
+  .j-card .idx{font-family:var(--font-mono); font-size:0.7rem; color:var(--mint);}
+  .j-card h3{font-size:1.05rem; margin:10px 0 8px;}
+  .j-card p{color:var(--text-1); font-size:0.86rem; line-height:1.6;}
+  .drag-hint{font-family:var(--font-mono); font-size:0.68rem; color:var(--text-2); padding:0 5vw; letter-spacing:0.06em;}
+
+  /* ---------- projects: horizontal snap gallery ---------- */
+  .p-gallery{display:flex; gap:24px; overflow-x:auto; padding:10px 5vw 30px; scroll-snap-type:x mandatory; scrollbar-width:none;}
+  .p-gallery::-webkit-scrollbar{display:none;}
+  .p-card{flex:0 0 min(78vw,420px); scroll-snap-align:center; overflow:hidden;}
+  .p-visual{height:200px; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; border-bottom:1px solid var(--glass-border);}
+  .p-visual.v1{background:radial-gradient(circle at 30% 20%, rgba(156,201,255,0.35), transparent 60%), radial-gradient(circle at 80% 80%, rgba(127,240,199,0.2), transparent 55%);}
+  .p-visual.v2{background:radial-gradient(circle at 70% 30%, rgba(255,133,99,0.3), transparent 60%), radial-gradient(circle at 20% 80%, rgba(156,201,255,0.2), transparent 55%);}
+  .p-visual.v3{background:radial-gradient(circle at 50% 20%, rgba(127,240,199,0.3), transparent 60%), radial-gradient(circle at 80% 80%, rgba(255,133,99,0.2), transparent 55%);}
+  .p-visual.v4{background:radial-gradient(circle at 25% 25%, rgba(255,133,99,0.3), transparent 60%), radial-gradient(circle at 75% 75%, rgba(156,201,255,0.25), transparent 55%);}
+  .p-visual svg{width:60px; height:60px; position:relative; z-index:2;}
+  .p-body{padding:26px 24px 28px;}
+  .p-body .tag{font-family:var(--font-mono); font-size:0.65rem; color:var(--mint); letter-spacing:0.1em; text-transform:uppercase;}
+  .p-body h3{font-size:1.15rem; margin:10px 0 10px;}
+  .p-body p{color:var(--text-1); font-size:0.88rem; line-height:1.65; margin-bottom:16px;}
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{font-family:var(--font-mono); font-size:0.66rem; padding:5px 10px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid var(--glass-border); color:var(--text-1);}
+
+  /* ---------- skills marquee ---------- */
+  .marquee-wrap{overflow:hidden; padding:14px 0;}
+  .marquee{display:flex; gap:14px; width:max-content; animation:scrollLeft 32s linear infinite;}
+  .marquee.rev{animation:scrollRight 36s linear infinite;}
+  @keyframes scrollLeft{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+  @keyframes scrollRight{from{transform:translateX(-50%);} to{transform:translateX(0);}}
+  .m-chip{font-family:var(--font-mono); font-size:0.82rem; padding:12px 22px; border-radius:100px; white-space:nowrap; color:var(--text-0);}
+  .m-chip b{color:var(--coral); font-weight:600;}
+
+  /* ---------- contact ---------- */
+  .contact-wrap{padding:0 5vw;}
+  .contact-card{padding:56px 44px; text-align:center; max-width:760px; margin:0 auto; position:relative; overflow:hidden;}
+  .contact-card h2{font-size:clamp(1.8rem,4vw,2.6rem); margin-bottom:14px;}
+  .contact-card p{color:var(--text-1); margin-bottom:32px; line-height:1.7;}
+  .social-row{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+  .social-btn{width:50px; height:50px; border-radius:16px; display:flex; align-items:center; justify-content:center; color:var(--text-1); transition:color .25s, border-color .25s;}
+  .social-btn svg{width:19px; height:19px;}
+  .social-btn:hover{color:var(--coral); border-color:rgba(255,133,99,0.4);}
+
+  footer{text-align:center; padding:40px 5vw 50px; font-family:var(--font-mono); font-size:0.7rem; color:var(--text-2);}
+
+  @media (max-width:980px){
+    .hero-inner{grid-template-columns:1fr;}
+    .orb-scene{order:-1; height:300px;}
+    .about-grid{grid-template-columns:1fr;}
+    nav ul{display:none;}
+    .nav-toggle{display:flex;}
+  }
+  @media (max-width:640px){
+    .section-shell{padding:100px 6vw 20px;}
+    .section-shell.bleed .section-head{padding:0 6vw;}
+  }
+</style>
+</head>
+<body>
+
+<div class="aurora"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="grain"></div>
+
+<header>
+  <div class="nav-inner glass">
+    <div class="logo">folio<span>.</span></div>
+    <nav>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#journey">Journey</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" aria-label="menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <div>
+      <div class="kicker">✦ Class 11 student &middot; building since Class 7</div>
+      <h1 class="hero-title">
+        <span class="line"><span>Code, hardware</span></span>
+        <span class="line"><span>&amp; <span class="accent">security</span> —</span></span>
+        <span class="line"><span>in one hand.</span></span>
+      </h1>
+      <p class="lede">I design and build AI agents, control real hardware with Arduino &amp; Raspberry Pi, ship mobile apps in Flutter, and I'm training toward a career in cybersecurity — all on Linux.</p>
+
+      <div class="pill-row">
+        <span class="pill glass">Python</span>
+        <span class="pill glass">Flutter</span>
+        <span class="pill glass">Linux</span>
+        <span class="pill glass">Cybersecurity</span>
+        <span class="pill glass" style="color:var(--coral); border-color:rgba(255,133,99,0.35);">🏆 LearnBridge @ OpenAI Hackathon</span>
+      </div>
+
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary magnetic">See my work →</a>
+        <a href="#contact" class="btn btn-ghost glass magnetic">Say hello</a>
+      </div>
+    </div>
+
+    <div class="orb-scene" id="orbScene">
+      <div class="orb" id="orb">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="ring r4"></div>
+        <div class="core"></div>
+        <div class="node n1"></div>
+        <div class="node n2"></div>
+        <div class="node n3"></div>
+        <div class="node n4"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-cue"><span>SCROLL</span><span class="line"></span></div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="section-shell">
+  <div class="section-head reveal">
+    <div class="eyebrow">About</div>
+    <h2>Learning by building, not just reading.</h2>
+  </div>
+
+  <div class="about-grid">
+    <div class="avatar-card glass reveal">
+      <div class="monogram">11</div>
+      <div class="meta">
+        GRADE — Class 11<br>
+        FOCUS — Cybersecurity<br>
+        CODING SINCE — Class 7<br>
+        OS — Linux
+      </div>
+    </div>
+    <div class="about-copy glass reveal">
+      <p>I'm a <span class="hl">Class 11 student</span> who's been writing code since <span class="hl">Class 7</span> — what started as curiosity turned into building real, working systems.</p>
+      <p>I work across <span class="hl">Python, Dart/Flutter, and embedded C</span>, and I'm comfortable developing entirely on <span class="hl">Linux</span>. Right now I'm deepening my knowledge of <span class="hl">cybersecurity</span> — networks, systems, and how to defend them.</p>
+      <p>I also love bridging software and the physical world, building projects on <span class="hl">Arduino</span> and <span class="hl">Raspberry Pi</span> that respond to real input in real time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= JOURNEY (horizontal scroll) ================= -->
+<section id="journey" class="section-shell bleed">
+  <div class="section-head reveal">
+    <div class="eyebrow">Journey</div>
+    <h2>Five checkpoints, one habit.</h2>
+  </div>
+  <div class="drag-hint reveal">← drag / scroll horizontally →</div>
+  <div class="h-scroll">
+    <div class="j-card glass reveal"><span class="idx">01 · Class 7</span><h3>First lines of code</h3><p>Curiosity turned into a habit of building small scripts and logic puzzles.</p></div>
+    <div class="j-card glass reveal"><span class="idx">02 · Early years</span><h3>Hardware curiosity</h3><p>Picked up Arduino &amp; Raspberry Pi — making code move real, physical things.</p></div>
+    <div class="j-card glass reveal"><span class="idx">03 · Growth</span><h3>Apps &amp; the web</h3><p>Built an e-commerce frontend and a Flutter app to control a soccer robot.</p></div>
+    <div class="j-card glass reveal"><span class="idx">04 · Recent</span><h3>AI agent — Jarvis</h3><p>A Python AI agent combining automation and command-driven control.</p></div>
+    <div class="j-card glass reveal"><span class="idx">05 · Recent</span><h3>OpenAI Hackathon</h3><p>Built <b style="color:var(--coral);">LearnBridge</b>, an inclusive AI learning assistant, at an OpenAI hackathon.</p></div>
+    <div class="j-card glass reveal"><span class="idx">06 · Now</span><h3>Cybersecurity track</h3><p>Class 11, deep in Linux &amp; security fundamentals — networks, systems, defense.</p></div>
+  </div>
+</section>
+
+<!-- ================= PROJECTS (horizontal gallery) ================= -->
+<section id="projects" class="section-shell bleed">
+  <div class="section-head reveal">
+    <div class="eyebrow">Projects</div>
+    <h2>Three builds, three disciplines.</h2>
+    <p>AI, web, and mobile-controlled hardware.</p>
+  </div>
+  <div class="p-gallery">
+    <article class="p-card glass reveal tilt-card">
+      <div class="p-visual v1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--ice)" stroke-width="1.4"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+      </div>
+      <div class="p-body">
+        <div class="tag">AI Agent</div>
+        <h3>Jarvis AI Agent</h3>
+        <p>A Python-based personal AI agent that understands commands and automates tasks, inspired by voice-assistant interaction.</p>
+        <div class="chip-row"><span class="chip">Python</span><span class="chip">Automation</span><span class="chip">NLP</span></div>
+      </div>
+    </article>
+    <article class="p-card glass reveal tilt-card">
+      <div class="p-visual v2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="1.4"><path d="M3 6h18l-2 12H5L3 6Z"/><path d="M3 6 2 3H0"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
+      </div>
+      <div class="p-body">
+        <div class="tag">Web Frontend</div>
+        <h3>E-Commerce Website</h3>
+        <p>A fully designed storefront frontend with product listings, cart interactions, and a clean, responsive layout.</p>
+        <div class="chip-row"><span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span></div>
+      </div>
+    </article>
+    <article class="p-card glass reveal tilt-card">
+      <div class="p-visual v3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="1.4"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <div class="p-body">
+        <div class="tag">Flutter · IoT</div>
+        <h3>SoccerBot Controller</h3>
+        <p>A Flutter app that pairs with and drives a custom soccer-playing robot — real-time movement control from my phone.</p>
+        <div class="chip-row"><span class="chip">Flutter</span><span class="chip">Dart</span><span class="chip">Robotics</span></div>
+      </div>
+    </article>
+    <article class="p-card glass reveal tilt-card">
+      <div class="p-visual v4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="1.4"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10v5c0 1.5 2.5 3 6 3s6-1.5 6-3v-5"/><path d="M22 8v6"/></svg>
+      </div>
+      <div class="p-body">
+        <div class="tag">OpenAI Hackathon Build</div>
+        <h3>LearnBridge</h3>
+        <p>An inclusive AI learning assistant with three independent modes — student, teacher, and elder/literacy — each generating tailored study guides, teaching packs, or simple spoken explanations, powered by GPT-5.6.</p>
+        <div class="chip-row"><span class="chip">JavaScript</span><span class="chip">Node.js</span><span class="chip">OpenAI API</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= SKILLS marquee ================= -->
+<section id="skills" class="section-shell bleed">
+  <div class="section-head reveal">
+    <div class="eyebrow">Skills</div>
+    <h2>What I build with.</h2>
+  </div>
+  <div class="marquee-wrap reveal">
+    <div class="marquee" id="mq1">
+      <span class="m-chip glass"><b>Python</b> — scripting &amp; AI</span>
+      <span class="m-chip glass"><b>Flutter</b> — mobile apps</span>
+      <span class="m-chip glass"><b>Dart</b></span>
+      <span class="m-chip glass"><b>JavaScript</b></span>
+      <span class="m-chip glass"><b>HTML / CSS</b></span>
+      <span class="m-chip glass"><b>C / C++</b> — embedded</span>
+      <span class="m-chip glass"><b>Python</b> — scripting &amp; AI</span>
+      <span class="m-chip glass"><b>Flutter</b> — mobile apps</span>
+      <span class="m-chip glass"><b>Dart</b></span>
+      <span class="m-chip glass"><b>JavaScript</b></span>
+      <span class="m-chip glass"><b>HTML / CSS</b></span>
+      <span class="m-chip glass"><b>C / C++</b> — embedded</span>
+    </div>
+  </div>
+  <div class="marquee-wrap reveal">
+    <div class="marquee rev" id="mq2">
+      <span class="m-chip glass"><b>Arduino</b></span>
+      <span class="m-chip glass"><b>Raspberry Pi</b></span>
+      <span class="m-chip glass"><b>Linux</b> — daily driver</span>
+      <span class="m-chip glass"><b>Networking</b> basics</span>
+      <span class="m-chip glass"><b>Cybersecurity</b> — learning</span>
+      <span class="m-chip glass"><b>CLI</b> tooling</span>
+      <span class="m-chip glass"><b>Arduino</b></span>
+      <span class="m-chip glass"><b>Raspberry Pi</b></span>
+      <span class="m-chip glass"><b>Linux</b> — daily driver</span>
+      <span class="m-chip glass"><b>Networking</b> basics</span>
+      <span class="m-chip glass"><b>Cybersecurity</b> — learning</span>
+      <span class="m-chip glass"><b>CLI</b> tooling</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="section-shell">
+  <div class="contact-wrap">
+    <div class="contact-card glass reveal">
+      <div class="eyebrow" style="justify-content:center;">Contact</div>
+      <h2>Let's build something.</h2>
+      <p>Open to collaborating on AI, embedded, or security projects — or just talking tech.</p>
+      <div class="social-row">
+        <a href="https://github.com/tejas-122" class="social-btn glass magnetic" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.04-.01-1.88-2.78.62-3.37-1.21-3.37-1.21-.45-1.18-1.11-1.5-1.11-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.36-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.72 0 0 .84-.28 2.75 1.05a9.36 9.36 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.46.1 2.72.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg></a>
+        <a href="https://www.linkedin.com/in/tejas-rathore-5201a8422/" class="social-btn glass magnetic" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.9 6 2.5 6S0 4.88 0 3.5 1.1 1 2.5 1s2.48 1.12 2.48 2.5ZM.5 8.5h4V23h-4V8.5ZM8.5 8.5h3.8v2h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4v-6.8c0-1.62-.03-3.7-2.26-3.7-2.26 0-2.6 1.77-2.6 3.58V23h-4V8.5Z"/></svg></a>
+        <a href="#" class="social-btn glass magnetic" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3 6 9 7 9-7"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>Built with HTML · CSS · JS — glass, aurora &amp; a little curiosity.</footer>
+
+<script>
+/* ---------------- aurora blobs follow scroll subtly ---------------- */
+window.addEventListener('scroll', ()=>{
+  const y = window.scrollY * 0.06;
+  document.querySelector('.blob-1').style.transform = `translateY(${y}px)`;
+  document.querySelector('.blob-2').style.transform = `translateY(${-y}px)`;
+  document.querySelector('.blob-3').style.transform = `translateY(${y*0.5}px)`;
+});
+
+/* ---------------- orb parallax on mouse ---------------- */
+const orbScene = document.getElementById('orbScene');
+const orb = document.getElementById('orb');
+orbScene.addEventListener('mousemove', e=>{
+  const r = orbScene.getBoundingClientRect();
+  const px = (e.clientX - r.left)/r.width - 0.5;
+  const py = (e.clientY - r.top)/r.height - 0.5;
+  orb.style.marginLeft = (px*22)+'px';
+  orb.style.marginTop = (py*22)+'px';
+});
+
+/* ---------------- magnetic buttons ---------------- */
+document.querySelectorAll('.magnetic').forEach(btn=>{
+  btn.addEventListener('mousemove', e=>{
+    const r = btn.getBoundingClientRect();
+    const x = e.clientX - r.left - r.width/2;
+    const y = e.clientY - r.top - r.height/2;
+    btn.style.transform = `translate(${x*0.25}px, ${y*0.35}px)`;
+  });
+  btn.addEventListener('mouseleave', ()=>{ btn.style.transform = 'translate(0,0)'; });
+});
+
+/* ---------------- tilt on project cards ---------------- */
+document.querySelectorAll('.tilt-card').forEach(card=>{
+  card.addEventListener('mousemove', e=>{
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left)/r.width - 0.5;
+    const py = (e.clientY - r.top)/r.height - 0.5;
+    card.style.transform = `perspective(900px) rotateX(${(-py*8).toFixed(2)}deg) rotateY(${(px*10).toFixed(2)}deg)`;
+  });
+  card.addEventListener('mouseleave', ()=>{ card.style.transform = 'perspective(900px) rotateX(0) rotateY(0)'; });
+});
+
+/* ---------------- vertical wheel -> horizontal scroll on galleries ---------------- */
+document.querySelectorAll('.h-scroll, .p-gallery').forEach(track=>{
+  track.addEventListener('wheel', (e)=>{
+    if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+      track.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
+  }, {passive:false});
+  // drag to scroll
+  let isDown=false, startX, scrollLeft;
+  track.addEventListener('mousedown', e=>{ isDown=true; startX=e.pageX; scrollLeft=track.scrollLeft; track.style.cursor='grabbing'; });
+  window.addEventListener('mouseup', ()=>{ isDown=false; track.style.cursor='grab'; });
+  window.addEventListener('mousemove', e=>{
+    if(!isDown) return;
+    track.scrollLeft = scrollLeft - (e.pageX - startX);
+  });
+});
+
+/* ---------------- scroll reveal ---------------- */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){ en.target.classList.add('in-view'); io.unobserve(en.target); }
+  });
+}, {threshold:0.12});
+document.querySelectorAll('.reveal').forEach((el,idx)=>{
+  el.style.transitionDelay = (idx%5)*0.05+'s';
+  io.observe(el);
+});
+
+/* ---------------- mobile nav toggle ---------------- */
+const toggle = document.querySelector('.nav-toggle');
+const navList = document.querySelector('nav ul');
+toggle.addEventListener('click', ()=>{
+  const open = navList.style.display === 'flex';
+  navList.style.display = open ? 'none' : 'flex';
+  navList.style.cssText += open ? '' : 'position:fixed; top:78px; right:5vw; flex-direction:column; background:rgba(10,13,32,0.95); backdrop-filter:blur(20px); padding:22px 28px; border-radius:16px; border:1px solid rgba(255,255,255,0.14); gap:18px;';
+});
+</script>
+</body>
+</html>
